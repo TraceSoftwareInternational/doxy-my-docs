@@ -92,8 +92,6 @@ class AppConfiguration:
         if 'language' not in cls.__config['project']:
             raise BadConfigurationError("Missing field 'language' in 'project' configuration")
 
-
-
     @staticmethod
     def __dict_merge(source, destination):
         """
