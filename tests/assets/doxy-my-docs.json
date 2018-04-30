@@ -1,0 +1,20 @@
+{
+    "debug": true,
+    "hostMyDocs" : {
+        "address" : "127.0.0.1",
+        "port": 8080,
+        "disable-tls": false,
+        "login": "login",
+        "password": "password"
+    },
+    "doxygen" : {
+        "doxygen": "C:\\Program Files\\doxygen\\bin\\doxygen.exe",
+        "doxyfile": "./Doxyfile"
+    },
+    "project" : {
+        "language": "Python",
+        "version": "0.0.0.0",
+        "name": "MyDefaultName"
+    }
+
+}
