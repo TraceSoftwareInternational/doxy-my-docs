@@ -3,13 +3,20 @@
 
 import doxygen
 import logging
+import os
 
+import sys
 
 from doxymydocs import configurationEnum, AppConfiguration
+from typing import Optional
 
 
-def __update_doxygen_config():
-    """ Update the doxygen configuration from the configuration """
+def __update_doxygen_config() -> str:
+    """
+    Update the doxygen configuration from the configuration
+
+    :return: The path to the updated doxygen configuration
+    """
 
     logging.info("update Doxygen configuration")
 
@@ -29,7 +36,28 @@ def __update_doxygen_config():
         logging.debug("Update PROJECT_NAME from {} to {}".format(doxygen_configuration['PROJECT_NAME'], project_config[configurationEnum.Project.NAME]))
         doxygen_configuration['PROJECT_NAME'] = project_config[configurationEnum.Project.NAME]
 
-    doxygen_config_parser.store_configuration(doxygen_configuration, doxyfile)
+    doxyfile_updated = os.path.join(doxyfile, ".updated")
+    doxygen_config_parser.store_configuration(doxygen_configuration, doxyfile_updated)
+    return doxyfile_updated
+
+
+def __build_doxygen_doc(doxyfile_path: str) -> Optional[str]:
+    """
+    Build the doxygen configuration using the doxyfile passed in arg
+
+    :param doxyfile_path: The Doxyfile you want to use
+    :return: The path to the documentation in zip format
+    """
+
+    logging.info("Build Doxygen documentation")
+    logging.debug("Doxyfile: {}".format(doxyfile_path))
+
+    doxy_builder = doxygen.Generator(
+        doxyfile_path,
+        doxygen_path=AppConfiguration().get_doxygen_config()[configurationEnum.Doxygen.DOXYGEN] if configurationEnum.Doxygen.DOXYGEN in AppConfiguration().get_doxygen_config() else None
+    )
+
+    return doxy_builder.build(clean=True, generate_zip=True)
 
 
 if __name__ == '__main__':
@@ -39,12 +67,14 @@ if __name__ == '__main__':
     app_config = AppConfiguration().get_config()
     if configurationEnum.General.DEBUG in app_config and app_config[configurationEnum.General.DEBUG]:
         logging.basicConfig(level=logging.DEBUG)
-    else:
-        logging.basicConfig(level=logging.WARNING)
 
     logging.debug("Configuration loaded: {}".format(app_config))
 
-    __update_doxygen_config()
+    doxyfile_path = __update_doxygen_config()
+    zip_archive_path = __build_doxygen_doc(doxyfile_path)
+    if zip_archive_path is None:
+        logging.fatal("Error during generation of documentation, exit program code 1")
+        sys.exit(1)
 
 
 
