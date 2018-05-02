@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # -*- encoding: utf-8 -*-
-from copy import deepcopy
 
 from doxymydocs import CommandLineParser
 import logging
