@@ -110,7 +110,7 @@ class CommandLineParser:
             config[configurationEnum.HostMyDocs.PORT] = self.parsed_cmd_line.port
 
         if self.parsed_cmd_line.disable_tls:
-            config[configurationEnum.HostMyDocs.TLS] = self.parsed_cmd_line.disable_tls
+            config[configurationEnum.HostMyDocs.DISABLE_TLS] = self.parsed_cmd_line.disable_tls
 
         if self.parsed_cmd_line.login:
             config[configurationEnum.HostMyDocs.LOGIN] = self.parsed_cmd_line.login

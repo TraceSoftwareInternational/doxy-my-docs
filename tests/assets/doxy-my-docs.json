@@ -12,9 +12,9 @@
         "doxyfile": "tests/assets/Doxyfile"
     },
     "project" : {
-        "language": "Python",
-        "version": "0.0.0.0",
-        "name": "MyDefaultName"
+        "language": "C++",
+        "version": "1.2.3.4",
+        "name": "MyNiceProject"
     }
 
 }

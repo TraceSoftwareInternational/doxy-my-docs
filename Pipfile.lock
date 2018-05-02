@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "83c2270283f0f3500b75ffaa5820b84d90d0f54ba56186f15faa1c1333bf45d5"
+            "sha256": "07bc8852519108cdfa63f2e1df26ef727966cf3a3057712a9a4707fd47888484"
         },
         "pipfile-spec": 6,
         "requires": {},
@@ -29,6 +29,13 @@
             ],
             "index": "pypi",
             "version": "==0.0.1"
+        },
+        "hostmydocs-client": {
+            "hashes": [
+                "sha256:c56c9b825a5eb00e2f55ce2e34cad7f2ee59b92b142023bddac63ae04a47e99c"
+            ],
+            "index": "pypi",
+            "version": "==1.0.1"
         }
     },
     "develop": {}

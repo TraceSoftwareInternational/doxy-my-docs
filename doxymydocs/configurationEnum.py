@@ -26,7 +26,7 @@ class HostMyDocs(StringEnum):
     HOST_MY_DOCS = "hostMyDocs"
     ADDRESS = "address"
     PORT = "port"
-    TLS = "disable-tls"
+    DISABLE_TLS = "disable-tls"
     LOGIN = "login"
     PASSWORD = "password"
 

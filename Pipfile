@@ -6,5 +6,6 @@ name = "pypi"
 [packages]
 doxygen-interface = "*"
 aenum = "*"
+hostmydocs-client = "*"
 
 [dev-packages]
