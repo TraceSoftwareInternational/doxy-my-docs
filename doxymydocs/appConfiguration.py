@@ -1,11 +1,13 @@
 #!/usr/bin/env python
 # -*- encoding: utf-8 -*-
+from copy import deepcopy
 
 from doxymydocs import CommandLineParser
 import logging
 import os
 import json
 from doxymydocs.exceptions import BadConfigurationError
+from doxymydocs import configurationEnum
 
 
 class AppConfiguration:
@@ -19,7 +21,7 @@ class AppConfiguration:
     @classmethod
     def get_config(cls) -> dict:
         """
-        Get the application configuration
+        Get all application configuration
 
         :return: The application configuration
         :raise FileNotFoundError: If the config file path in parameter cannot be found
@@ -31,6 +33,42 @@ class AppConfiguration:
 
         return cls.__config
 
+    @classmethod
+    def get_project_config(cls) -> dict:
+        """
+        Get the configuration about project
+
+        :return: The project configuration
+        :raise FileNotFoundError: If the config file path in parameter cannot be found
+        :raise BadConfigurationError: If an error was found in the configuration
+        """
+
+        return cls.get_config()[configurationEnum.Project.PROJECT]
+
+    @classmethod
+    def get_doxygen_config(cls) -> dict:
+        """
+        Get the configuration about Doxygen
+
+        :return: The Doxygen configuration
+        :raise FileNotFoundError: If the config file path in parameter cannot be found
+        :raise BadConfigurationError: If an error was found in the configuration
+        """
+
+        return cls.get_config()[configurationEnum.Doxygen.DOXYGEN]
+
+    @classmethod
+    def get_hmd_config(cls) -> dict:
+        """
+        Get the configuration about HostMyDocs
+
+        :return: The HostMyDocs configuration
+        :raise FileNotFoundError: If the config file path in parameter cannot be found
+        :raise BadConfigurationError: If an error was found in the configuration
+        """
+
+        return cls.get_config()[configurationEnum.HostMyDocs.HOST_MY_DOCS]
+
     def __load(self):
         """
         Load the configuration
@@ -41,12 +79,11 @@ class AppConfiguration:
 
         cmd_args = CommandLineParser().parse_to_dict()
 
-        if "config_file" in cmd_args:
-            self.__init_from_config_file(cmd_args['config_file'])
+        if configurationEnum.General.CONFIG_FILE in cmd_args:
+            self.__init_from_config_file(cmd_args[configurationEnum.General.CONFIG_FILE])
 
         self.__init_from_command_line_args(cmd_args)
         self.__config_is_valid()
-
 
     def __init_from_command_line_args(self, cmd_args: dict):
         """
@@ -56,7 +93,16 @@ class AppConfiguration:
         """
 
         logging.debug("Load from command line")
-        AppConfiguration.__config = AppConfiguration.__dict_merge(cmd_args, AppConfiguration.__config)
+        type(self).__config = self.__dict_merge(type(self).__config, cmd_args)
+
+    @staticmethod
+    def __json_hook_convert_key_to_enum_value(dict_entry: dict) -> dict:
+        """
+        Hook for json.load(object_hook) which convert key string to enum value
+        :param dict_entry: The dict which want to be converted
+        :return: The converted dict
+        """
+        return {configurationEnum.string_to_config_enum_value(key): value for (key, value) in dict_entry.items()}
 
     def __init_from_config_file(self, config_file: str):
         """
@@ -73,30 +119,27 @@ class AppConfiguration:
             raise FileNotFoundError(err_msg)
 
         with open(config_file, 'r') as json_data_file:
-            AppConfiguration.__config = json.load(json_data_file)
+            type(self).__config = {k: v for (k, v) in json.load(json_data_file, object_hook=self.__json_hook_convert_key_to_enum_value).items() if k != configurationEnum.StringEnum.UNDEFINED}
 
-    @classmethod
-    def __config_is_valid(cls):
+    def __config_is_valid(self):
         """
         Check if the app configuration is valid
 
         :raise BadConfigurationError: If the configuration is invalid
         """
-
-        if not all(key in cls.__config['hostMyDocs'] for key in ['address', 'login', 'password']):
+        if not all(key in type(self).__config[configurationEnum.HostMyDocs.HOST_MY_DOCS] for key in [configurationEnum.HostMyDocs.ADDRESS, configurationEnum.HostMyDocs.LOGIN, configurationEnum.HostMyDocs.PASSWORD]):
             raise BadConfigurationError("Missing field in 'hostMyDocs' configuration")
 
-        if 'doxyfile' not in cls.__config['doxygen']:
-            raise BadConfigurationError("Missing field 'doxyfile' in 'doxygen' configuration")
+        if configurationEnum.Doxygen.DOXYFILE not in type(self).__config[configurationEnum.Doxygen.DOXYGEN]:
+            raise BadConfigurationError("Missing field '{}' in '{}' configuration".format(configurationEnum.Doxygen.DOXYFILE, configurationEnum.Doxygen.DOXYGEN))
 
-        if 'language' not in cls.__config['project']:
-            raise BadConfigurationError("Missing field 'language' in 'project' configuration")
+        if configurationEnum.Project.LANG not in type(self).__config[configurationEnum.Project.PROJECT]:
+            raise BadConfigurationError("Missing field '{}' in '{}' configuration".format(configurationEnum.Project.LANG, configurationEnum.Project.PROJECT))
 
     @staticmethod
     def __dict_merge(source, destination):
         """
         run me with nosetests --with-doctest file.py
-
             >>> a = { 'first' : { 'all_rows' : { 'pass' : 'dog', 'number' : '1' } } }
             >>> b = { 'first' : { 'all_rows' : { 'fail' : 'cat', 'number' : '5' } } }
             >>> merge(b, a) == { 'first' : { 'all_rows' : { 'pass' : 'dog', 'fail' : 'cat', 'number' : '5' } } }

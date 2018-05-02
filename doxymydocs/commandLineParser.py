@@ -3,6 +3,7 @@
 
 import argparse
 import sys
+from doxymydocs import configurationEnum
 
 
 class CommandLineParser:
@@ -72,9 +73,9 @@ class CommandLineParser:
 
         self.parse()
         config = self.__parse_general_option()
-        config['hostMyDocs'] = self.__parse_hmd_config_option()
-        config['doxygen'] = self.__parse_doxygen_config_option()
-        config['project'] = self.__parse_project_config_option()
+        config[configurationEnum.HostMyDocs.HOST_MY_DOCS] = self.__parse_hmd_config_option()
+        config[configurationEnum.Doxygen.DOXYGEN] = self.__parse_doxygen_config_option()
+        config[configurationEnum.Project.PROJECT] = self.__parse_project_config_option()
 
         return config
 
@@ -87,10 +88,10 @@ class CommandLineParser:
         config = {}
 
         if self.parsed_cmd_line.debug:
-            config['debug'] = True
+            config[configurationEnum.General.DEBUG] = True
 
         if self.parsed_cmd_line.config_file:
-            config['config_file'] = self.parsed_cmd_line.config_file
+            config[configurationEnum.General.CONFIG_FILE] = self.parsed_cmd_line.config_file
 
         return config
 
@@ -103,19 +104,19 @@ class CommandLineParser:
 
         config = {}
         if self.parsed_cmd_line.address:
-            config['address'] = self.parsed_cmd_line.address
+            config[configurationEnum.HostMyDocs.ADDRESS] = self.parsed_cmd_line.address
 
         if self.parsed_cmd_line.port:
-            config['port'] = self.parsed_cmd_line.port
+            config[configurationEnum.HostMyDocs.PORT] = self.parsed_cmd_line.port
 
         if self.parsed_cmd_line.disable_tls:
-            config['disable-tls'] = self.parsed_cmd_line.disable_tls
+            config[configurationEnum.HostMyDocs.TLS] = self.parsed_cmd_line.disable_tls
 
         if self.parsed_cmd_line.login:
-            config['login'] = self.parsed_cmd_line.login
+            config[configurationEnum.HostMyDocs.LOGIN] = self.parsed_cmd_line.login
 
         if self.parsed_cmd_line.password:
-            config['password'] = self.parsed_cmd_line.password
+            config[configurationEnum.HostMyDocs.PASSWORD] = self.parsed_cmd_line.password
 
         return config
 
@@ -128,10 +129,10 @@ class CommandLineParser:
 
         config = {}
         if self.parsed_cmd_line.doxygen:
-            config['doxygen'] = self.parsed_cmd_line.doxygen
+            config[configurationEnum.Doxygen.DOXYGEN] = self.parsed_cmd_line.doxygen
 
         if self.parsed_cmd_line.doxyfile:
-            config['doxyfile'] = self.parsed_cmd_line.doxyfile
+            config[configurationEnum.Doxygen.DOXYFILE] = self.parsed_cmd_line.doxyfile
 
         return config
 
@@ -144,12 +145,12 @@ class CommandLineParser:
 
         config = {}
         if self.parsed_cmd_line.language:
-            config['language'] = self.parsed_cmd_line.language
+            config[configurationEnum.Project.LANG] = self.parsed_cmd_line.language
 
         if self.parsed_cmd_line.project_version:
-            config['version'] = self.parsed_cmd_line.project_version
+            config[configurationEnum.Project.VERSION] = self.parsed_cmd_line.project_version
 
         if self.parsed_cmd_line.name:
-            config['name'] = self.parsed_cmd_line.name
+            config[configurationEnum.Project.NAME] = self.parsed_cmd_line.name
 
         return config
