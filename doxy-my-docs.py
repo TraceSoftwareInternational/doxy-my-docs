@@ -105,6 +105,18 @@ def __upload_doc_to_hmd(doc_to_upload: hostmydocs.Documentation) -> bool:
     return hmd_client.upload_documentation(doc_to_upload)
 
 
+def __set_working_dir():
+    """
+    Define the working dir to the folder where config file is store.
+    If no config file used, not change the working dir
+    """
+
+    if configurationEnum.General.CONFIG_FILE in AppConfiguration().get_config():
+        config_folder = os.path.dirname(AppConfiguration().get_config()[configurationEnum.General.CONFIG_FILE])
+        logging.debug("Set current directory to config file directory: {}".format(config_folder))
+        os.chdir(config_folder)
+
+
 if __name__ == '__main__':
 
     logging.basicConfig(level=logging.INFO)
@@ -117,6 +129,8 @@ if __name__ == '__main__':
             logging.basicConfig(level=logging.DEBUG)
 
         logging.debug("Configuration loaded: {}".format(app_config))
+
+        __set_working_dir()
 
         doxy_config, doxyfile = __update_doxygen_config()
         doc = __build_doxygen_doc(doxy_config, doxyfile)
