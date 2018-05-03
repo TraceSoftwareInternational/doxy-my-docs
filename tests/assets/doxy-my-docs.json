@@ -9,7 +9,7 @@
     },
     "doxygen" : {
         "doxygen": "C:\\Program Files\\doxygen\\bin\\doxygen.exe",
-        "doxyfile": "tests/assets/Doxyfile"
+        "doxyfile": "./Doxyfile"
     },
     "project" : {
         "language": "C++",

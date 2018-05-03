@@ -9,3 +9,5 @@ aenum = "*"
 hostmydocs-client = "*"
 
 [dev-packages]
+
+[scripts]

@@ -1,21 +1,22 @@
 #!/usr/bin/env python
 # -*- encoding: utf-8 -*-
 
-import doxygen
 import logging
 import sys
-
-import hostmydocs
-
-from doxymydocs import configurationEnum, AppConfiguration
 from typing import Optional
 
+import doxygen
+import hostmydocs
+import os
 
-def __update_doxygen_config() -> dict:
+from doxymydocs import configurationEnum, AppConfiguration
+
+
+def __update_doxygen_config() -> (dict, str):
     """
     Update the doxygen configuration from the configuration
 
-    :return: The doxygen configuration updated
+    :return: The doxygen configuration updated and the path to the updated doxygen config
     """
 
     logging.info("update Doxygen configuration")
@@ -36,30 +37,36 @@ def __update_doxygen_config() -> dict:
         logging.debug("Update PROJECT_NAME from {} to {}".format(doxygen_configuration['PROJECT_NAME'], project_config[configurationEnum.Project.NAME]))
         doxygen_configuration['PROJECT_NAME'] = project_config[configurationEnum.Project.NAME]
 
-    doxygen_config_parser.store_configuration(doxygen_configuration, doxyfile)
+    doxyfile_updated = doxyfile+".updated"
+    logging.debug("Doxyfile updated: {}".format(doxyfile_updated))
 
-    return doxygen_configuration
+    doxygen_config_parser.store_configuration(doxygen_configuration, doxyfile_updated)
+
+    return doxygen_configuration, doxyfile_updated
 
 
-def __build_doxygen_doc(doxygen_configuration: dict) -> Optional[hostmydocs.Documentation]:
+def __build_doxygen_doc(doxygen_configuration: dict, doxyfile: str) -> Optional[hostmydocs.Documentation]:
     """
     Build the doxygen configuration using the doxyfile passed in arg
 
+    :param doxygen_configuration: The dict which represent the updated doxygen config
+    :param doxyfile: The path to the doxygen config updated
     :return: Documentations object ready to be uploaded. None if an error was occurred
     """
 
     logging.info("Build Doxygen documentation")
 
-    doxyfile_path = AppConfiguration().get_doxygen_config()[configurationEnum.Doxygen.DOXYFILE]
-    logging.debug("Doxyfile: {}".format(doxyfile_path))
-
     doxygen_config = AppConfiguration().get_doxygen_config()
     doxy_builder = doxygen.Generator(
-        doxyfile_path,
+        doxyfile,
         doxygen_path=doxygen_config[configurationEnum.Doxygen.DOXYGEN] if configurationEnum.Doxygen.DOXYGEN in doxygen_config else None
     )
 
     zip_archive_path = doxy_builder.build(clean=True, generate_zip=True)
+
+    logging.debug("Delete doxyfile: {}".format(doxyfile))
+    os.remove(doxyfile)
+
     if zip_archive_path is None:
         logging.error("Impossible to build documentation")
         return None
@@ -105,12 +112,14 @@ if __name__ == '__main__':
     try:
         app_config = AppConfiguration().get_config()
         if configurationEnum.General.DEBUG in app_config and app_config[configurationEnum.General.DEBUG]:
+            for handler in logging.root.handlers[:]:
+                logging.root.removeHandler(handler)
             logging.basicConfig(level=logging.DEBUG)
 
         logging.debug("Configuration loaded: {}".format(app_config))
 
-        doxy_config = __update_doxygen_config()
-        doc = __build_doxygen_doc(doxy_config)
+        doxy_config, doxyfile = __update_doxygen_config()
+        doc = __build_doxygen_doc(doxy_config, doxyfile)
         if doc is None:
             logging.fatal("Error during generation of documentation, exit program code 1")
             sys.exit(1)
@@ -122,12 +131,5 @@ if __name__ == '__main__':
         logging.info("Process done with success")
     except Exception as e:
         logging.fatal("Exception throw, process will exit with code 3")
-        logging.fatal(e)
+        logging.exception(e)
         sys.exit(3)
-
-
-
-
-
-
-
