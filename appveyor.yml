@@ -6,20 +6,24 @@ image:
 environment:
   matrix:
     - PYTHON: "C:\\Python36-x64"
+      PYTHON_VERSION: "3.6.x"
+      PYTHON_ARCH: "64"
 
 #branches:
 #  only:
 #    - master
 
 install:
+  - "python --version"
+  - "python -c \"import struct; print(struct.calcsize('P') * 8)\""
   - "python -m pip install --upgrade pip"
   - pip install pipenv
   - pipenv install --dev --system
 
 build_script:
   - pipenv run build-exe
-  - cmd: dir dist/*
-  - sh: dir dist/*
+  - cmd: dir dist/
+  - sh: ls dist/
 
 artifacts:
   - path: dist/*
