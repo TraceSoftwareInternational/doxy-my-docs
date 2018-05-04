@@ -1,8 +1,11 @@
 
-
 image:
   - Python
-  - Ubuntu
+#  - Ubuntu
+
+environment:
+  matrix:
+    - PYTHON: "C:\\Python36-x64"
 
 #branches:
 #  only:
