@@ -9,5 +9,7 @@ aenum = "*"
 hostmydocs-client = "*"
 
 [dev-packages]
+pyinstaller = "*"
 
 [scripts]
+build-exe="pyinstaller --onefile doxy-my-docs.py"
