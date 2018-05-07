@@ -1,0 +1,38 @@
+
+image:
+  - Visual Studio 2017
+#  - Ubuntu
+
+environment:
+  matrix:
+    - PYTHON: "C:\\Python36-x64"
+      PYTHON_VERSION: "3.6.x"
+      PYTHON_ARCH: "64"
+
+install:
+  - cmd: "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
+  - cmd: pip install pypiwin32
+
+  - pip install pipenv
+  - pipenv install --dev --system
+
+build_script:
+  - pipenv run build-exe
+  - cmd: dir dist
+  - sh: ls dist/
+
+artifacts:
+  - path: dist/*.exe
+
+deploy:
+  release: $(APPVEYOR_REPO_TAG_NAME)
+  description: 'doxy-my-docs build $(appveyor_build_version)'
+  provider: GitHub
+  auth_token:
+    secure: 9o/OFtRCL6Pkbu8mxLa4GUgicXUALnv+xW+gyhqutkc7FmrPlFykbbsLhtwB9yi3
+  artifact: dist/*.exe
+  draft: true
+  prerelease: false
+  on:
+    branch: master
+    appveyor_repo_tag: true

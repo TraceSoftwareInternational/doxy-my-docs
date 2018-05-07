@@ -1,0 +1,15 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+doxygen-interface = "*"
+aenum = "*"
+hostmydocs-client = "*"
+
+[dev-packages]
+pyinstaller = "*"
+
+[scripts]
+build-exe="pyinstaller --onefile doxy-my-docs.py"

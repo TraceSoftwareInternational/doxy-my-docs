@@ -1,0 +1,18 @@
+{
+    "debug": true,
+    "hostMyDocs" : {
+        "address" : "127.0.0.1",
+        "port": 8080,
+        "disable-tls": false,
+        "login": "login",
+        "password": "password"
+    },
+    "doxygen" : {
+        "doxyfile": "./Doxyfile"
+    },
+    "project" : {
+        "language": "C++",
+        "version": "1.2.3.4",
+        "name": "MyNiceProject"
+    }
+}
