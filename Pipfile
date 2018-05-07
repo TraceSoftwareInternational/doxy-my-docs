@@ -10,6 +10,7 @@ hostmydocs-client = "*"
 
 [dev-packages]
 pyinstaller = "*"
+pypiwin32 = "*"
 
 [scripts]
 build-exe="pyinstaller --onefile doxy-my-docs.py"
