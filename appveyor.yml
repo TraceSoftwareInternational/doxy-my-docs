@@ -26,11 +26,11 @@ artifacts:
 
 deploy:
   release: $(APPVEYOR_REPO_TAG_NAME)
-  description: 'doxy-my-docs build $(appveyor_build_version)'
+  description: '$(APPVEYOR_PROJECT_NAME) build $(APPVEYOR_BUILD_NUMBER)'
   provider: GitHub
   auth_token:
     secure: 9o/OFtRCL6Pkbu8mxLa4GUgicXUALnv+xW+gyhqutkc7FmrPlFykbbsLhtwB9yi3
-  artifact: dist/*.exe
+  artifact: 'dist\doxy-my-docs.exe'
   draft: true
   prerelease: false
   on:
