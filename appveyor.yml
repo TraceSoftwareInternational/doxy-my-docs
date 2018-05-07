@@ -9,14 +9,11 @@ environment:
       PYTHON_VERSION: "3.6.x"
       PYTHON_ARCH: "64"
 
-#branches:
-#  only:
-#    - master
-
 install:
-  - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
+  - cmd: "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
+  - cmd: pip install pypiwin32
+
   - pip install pipenv
-  - pip install pypiwin32
   - pipenv install --dev --system
 
 build_script:
@@ -25,17 +22,17 @@ build_script:
   - sh: ls dist/
 
 artifacts:
-  - path: dist/*
+  - path: dist/*.exe
 
-#deploy:
-#  release: v$(appveyor_build_version)
-#  description: 'Release description'
-#  provider: GitHub
-#  auth_token:
-#    secure: <your encrypted token> # your encrypted token from GitHub
-#  artifact: /.*\.nupkg/            # upload all NuGet packages to release assets
-#  draft: false
-#  prerelease: false
-#  on:
-#    branch: master                 # release from master branch only
-#    appveyor_repo_tag: true        # deploy on tag push only
+deploy:
+  release: $(APPVEYOR_REPO_TAG_NAME)
+  description: 'doxy-my-docs build $(appveyor_build_version)'
+  provider: GitHub
+  auth_token:
+    secure: 9o/OFtRCL6Pkbu8mxLa4GUgicXUALnv+xW+gyhqutkc7FmrPlFykbbsLhtwB9yi3
+  artifact: dist/*.exe
+  draft: true
+  prerelease: false
+  on:
+    branch: master
+    appveyor_repo_tag: true
