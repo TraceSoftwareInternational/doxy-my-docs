@@ -21,7 +21,7 @@ install:
 
 build_script:
   - pipenv run build-exe
-  - cmd: dir dist/
+  - cmd: dir dist
   - sh: ls dist/
 
 artifacts:
