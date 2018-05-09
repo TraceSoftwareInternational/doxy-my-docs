@@ -96,7 +96,7 @@ def __upload_doc_to_hmd(doc_to_upload: hostmydocs.Documentation) -> bool:
         port=hmd_config[configurationEnum.HostMyDocs.PORT] if configurationEnum.HostMyDocs.PORT in hmd_config else 443,
         api_login=hmd_config[configurationEnum.HostMyDocs.LOGIN],
         api_password=hmd_config[configurationEnum.HostMyDocs.PASSWORD],
-        use_tls=hmd_config[configurationEnum.HostMyDocs.DISABLE_TLS] if configurationEnum.HostMyDocs.DISABLE_TLS in hmd_config else True
+        use_tls=not hmd_config[configurationEnum.HostMyDocs.DISABLE_TLS] if configurationEnum.HostMyDocs.DISABLE_TLS in hmd_config else False
     )
 
     logging.debug("Server config: {}".format(hmd_server_config))
