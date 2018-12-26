@@ -6,7 +6,7 @@ name = "pypi"
 [packages]
 doxygen-interface = "*"
 aenum = "*"
-hostmydocs-client = "*"
+hostmydocs-client = ">=1.0.3"
 
 [dev-packages]
 pyinstaller = "*"
